@@ -1,21 +1,23 @@
 #include <stdio.h>
 #include <errno.h>
 #include <stdlib.h>
-
+#include <string.h>
 
 
 void read_from_file(){
 
   FILE * inn =  fopen("/home/anders/Dev/min_editor/new.txt", "w+");
-  char buffer[5] = "Hello";
+  char buffer[50] = "Hello this is me";
   if(errno != 0){
 
     perror("fopen");
     return exit(EXIT_FAILURE);
   }else{
 
-    fwrite(buffer,sizeof(char),sizeof(buffer),inn);
+    fwrite(buffer,sizeof(char),strlen(buffer),inn);
 
+
+    printf("%d", strlen(buffer));
   fclose(inn);
   }
 
