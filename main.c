@@ -16,6 +16,9 @@ void read_from_file(){
     return exit(EXIT_FAILURE);
   }else{
 
+    printf("\x1b[2J");
+    printf("\x1b[H");
+    printf("\x1b[2K");
     int c;
     while((c = fgetc(inn))!= EOF)
       putchar(c);
