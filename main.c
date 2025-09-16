@@ -7,7 +7,10 @@
 void read_from_file(){
 
   FILE * inn =  fopen("/home/anders/Dev/min_editor/new.txt", "w+");
-  char buffer[50] = "Hello this is me";
+  char buffer[50]; 
+
+  fgets(buffer, sizeof(buffer), stdin);
+
   if(errno != 0){
 
     perror("fopen");
@@ -28,8 +31,8 @@ void input(){
 
   printf("Hello World! type something\n");
 	char input [20];
-	fgets(input, sizeof(input), stdin);
 
+	fgets(input, sizeof(input), stdin);
 	if(errno != 0){
 		perror("fgets");
 	}
