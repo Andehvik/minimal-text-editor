@@ -6,10 +6,9 @@
 
 void read_from_file(){
 
-  FILE * inn =  fopen("/home/anders/Dev/min_editor/new.txt", "w+");
+  FILE * inn =  fopen("/home/anders/Dev/min_editor/new.txt", "r+");
   char buffer[50]; 
 
-  fgets(buffer, sizeof(buffer), stdin);
 
   if(errno != 0){
 
@@ -17,6 +16,18 @@ void read_from_file(){
     return exit(EXIT_FAILURE);
   }else{
 
+    int c;
+    while((c = fgetc(inn))!= EOF)
+      putchar(c);
+
+    if(ferror(inn))
+      puts("I/O error when reading");
+    else if(feof(inn))
+    {
+      puts("End of file is reached successfully");
+    }
+
+  fgets(buffer, sizeof(buffer), stdin);
     fwrite(buffer,sizeof(char),strlen(buffer),inn);
 
 
