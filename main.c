@@ -2,9 +2,18 @@
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>
+#include <termios.h>
 
 
+struct termios info;
 void read_from_file(){
+
+  
+tcgetattr(0, &info);
+info.c_lflag &= ~ICANON;
+  info.c_cc[VMIN] = 1;
+  info.c_cc[VTIME] = 0;
+  tcsetattr(0,TCSANOW,&info);
 
   FILE * inn =  fopen("/home/anders/Dev/min_editor/new.txt", "r+");
   char buffer[50]; 
@@ -30,12 +39,25 @@ void read_from_file(){
       puts("End of file is reached successfully");
     }
 
+    while(1){
+
+      if(getchar() == 107){
+        printf("\x1b[1A");
+      }
+      if(getchar() == 106){
+        printf("\x1b[1B");
+      }
+    }
+
   fgets(buffer, sizeof(buffer), stdin);
     fwrite(buffer,sizeof(char),strlen(buffer),inn);
 
 
     printf("%d", strlen(buffer));
   fclose(inn);
+    tcgetattr(0,&info);
+    info.c_lflag |= ICANON;
+    tcsetattr(0, TCSANOW, &info);
   }
 
   
