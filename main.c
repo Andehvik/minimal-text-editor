@@ -1,9 +1,28 @@
 #include <errno.h>
+#include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <termios.h>
+#include <unistd.h>
 
+int supress_stdout() {
+
+  fflush(stdout);
+
+  int ret = dup(1);
+  int nullfd = open("/dev/null", O_WRONLY);
+
+  dup2(nullfd, 1);
+  close(nullfd);
+}
+
+void resume_stdout(int fd) {
+
+  fflush(stdout);
+  dup2(fd, 1);
+  close(fd);
+}
 struct termios info;
 void read_from_file() {
 
@@ -25,10 +44,19 @@ void read_from_file() {
     printf("\x1b[2J");
     printf("\x1b[H");
     printf("\x1b[2K");
-    int c;
-    while ((c = fgetc(inn)) != EOF)
-      putchar(c);
 
+    printf("\x1b[s");
+
+    printf("\x1b[u");
+    int c;
+    int lineNumbers = 0;
+    while ((c = fgetc(inn)) != EOF) {
+      if (c == 10) {
+        printf("\r%d", lineNumbers);
+        lineNumbers++;
+      }
+      putchar(c);
+    }
     if (ferror(inn))
       puts("I/O error when reading");
     else if (feof(inn)) {
@@ -42,6 +70,9 @@ void read_from_file() {
       }
       if (getchar() == 106) {
         printf("\x1b[1B");
+      }
+      if (getchar() == 113) {
+        break;
       }
     }
 
